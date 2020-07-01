@@ -5,10 +5,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Lgdev07/crud_api/middlewares"
 	"github.com/Lgdev07/crud_api/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres
 )
 
 type App struct {
@@ -35,11 +36,13 @@ func (a *App) Initialize(DbHost, DbPort, DbUser, DbName, DbPassword string) {
 }
 
 func (a *App) initializeRoutes() {
+	a.Router.Use(middlewares.SetContentTypeMiddleware) // setting content-type to json
+
 	a.Router.HandleFunc("/stores", a.createStore).Methods("POST")
-	a.Router.HandleFunc("/stores/{id}", a.updateStore).Methods("PUT")
-	a.Router.HandleFunc("/stores/{id}", a.deleteStore).Methods("DELETE")
+	// a.Router.HandleFunc("/stores/{id}", a.updateStore).Methods("PUT")
+	// a.Router.HandleFunc("/stores/{id}", a.deleteStore).Methods("DELETE")
 	a.Router.HandleFunc("/stores", a.listStore).Methods("GET")
-	a.Router.HandleFunc("/stores/{id}", a.showStore).Methods("GET")
+	// a.Router.HandleFunc("/stores/{id}", a.showStore).Methods("GET")
 }
 
 func (a *App) RunServer() {
