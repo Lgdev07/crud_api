@@ -39,10 +39,10 @@ func (a *App) initializeRoutes() {
 	a.Router.Use(middlewares.SetContentTypeMiddleware) // setting content-type to json
 
 	a.Router.HandleFunc("/stores", a.createStore).Methods("POST")
-	// a.Router.HandleFunc("/stores/{id}", a.updateStore).Methods("PUT")
-	// a.Router.HandleFunc("/stores/{id}", a.deleteStore).Methods("DELETE")
+	a.Router.HandleFunc("/stores/{id:[0-9]+}", a.updateStore).Methods("PUT")
+	a.Router.HandleFunc("/stores/{id:[0-9]+}", a.deleteStore).Methods("DELETE")
 	a.Router.HandleFunc("/stores", a.listStore).Methods("GET")
-	// a.Router.HandleFunc("/stores/{id}", a.showStore).Methods("GET")
+	a.Router.HandleFunc("/stores/{id:[0-9]+}", a.showStore).Methods("GET")
 }
 
 func (a *App) RunServer() {

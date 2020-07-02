@@ -41,3 +41,39 @@ func GetStores(db *gorm.DB) (*[]Store, error) {
 
 	return &stores, nil
 }
+
+// GetStoreByID return a store by the id parameter
+func GetStoreByID(id int, db *gorm.DB) (*Store, error) {
+	store := Store{}
+
+	if err := db.Debug().Table("stores").Where("id = ?", id).First(&store).Error; err != nil {
+		return &Store{}, err
+	}
+	return &store, nil
+
+}
+
+// DeleteStore deletes a store based in the id
+func DeleteStore(id int, db *gorm.DB) error {
+	store := Store{}
+
+	if err := db.Debug().Table("stores").Where("id = ?", id).Delete(store).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// UpdateStore update a record based in the id
+func (s *Store) UpdateStore(id int, db *gorm.DB) (*Store, error) {
+	if err := db.Debug().Table("stores").Where("id = ?", id).Updates(Store{
+		Name:   s.Name,
+		Type:   s.Type,
+		Active: s.Active,
+	}).Error; err != nil {
+		return &Store{}, err
+	}
+
+	return s, nil
+}

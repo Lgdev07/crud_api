@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/Lgdev07/crud_api/models"
 	"github.com/Lgdev07/crud_api/responses"
+	"github.com/gorilla/mux"
 )
 
 func (a *App) createStore(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +44,7 @@ func (a *App) createStore(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) listStore(w http.ResponseWriter, r *http.Request) {
-	stores, err := models.GetStores(&a.DB)
+	stores, err := models.GetStores(a.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -51,75 +53,89 @@ func (a *App) listStore(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// func (a *App) updateStore(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
+func (a *App) updateStore(w http.ResponseWriter, r *http.Request) {
+	resp := map[string]interface{}{"status": "success"}
 
-// 	body, err := ioutil.ReadAll(r.Body)
+	params := mux.Vars(r)
 
-// 	defer r.Body.Close()
+	intID, _ := strconv.Atoi(params["id"])
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
+	store, _ := models.GetStoreByID(intID, a.DB)
 
-// 	type ParamsProps struct {
-// 		Name string `json:"name"`
-// 	}
+	if store.ID == 0 {
+		resp["status"] = "failed"
+		resp["message"] = "Store not found"
+		responses.JSON(w, http.StatusBadRequest, resp)
+		return
+	}
 
-// 	var paramsProps ParamsProps
+	updatedStore := models.Store{}
 
-// 	err = json.Unmarshal(body, &paramsProps)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), 500)
-// 		return
-// 	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
 
-// 	params := mux.Vars(r)
+	if err := json.Unmarshal(body, &updatedStore); err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
 
-// 	for _, store := range stores {
-// 		if store.ID == params["id"] {
-// 			store.Name = paramsProps.Name
-// 			output, err := json.Marshal(store)
+	updatedStore.Prepare()
 
-// 			if err != nil {
-// 				http.Error(w, err.Error(), 500)
-// 				return
-// 			}
+	_, err = updatedStore.UpdateStore(intID, a.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
 
-// 			w.Write(output)
-// 			return
-// 		}
-// 	}
-// }
+	resp["message"] = "Store Updated"
+	resp["store"] = updatedStore
+	responses.JSON(w, http.StatusOK, resp)
+	return
+}
 
-// func (a *App) deleteStore(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	params := mux.Vars(r)
+func (a *App) deleteStore(w http.ResponseWriter, r *http.Request) {
+	resp := map[string]interface{}{
+		"status": "Successed Request",
+	}
 
-// 	for index, value := range stores {
-// 		if value.ID == params["id"] {
-// 			stores[index] = stores[len(stores)-1]
-// 			stores = stores[:len(stores)-1]
-// 			json.NewEncoder(w).Encode(stores)
-// 			return
-// 		}
-// 	}
-// }
+	params := mux.Vars(r)
 
-// func (a *App) listStore(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	json.NewEncoder(w).Encode(stores)
-// }
+	intID, _ := strconv.Atoi(params["id"])
 
-// func (a *App) showStore(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
+	store, _ := models.GetStoreByID(intID, a.DB)
 
-// 	params := mux.Vars(r)
-// 	for _, item := range stores {
-// 		if item.ID == params["id"] {
-// 			json.NewEncoder(w).Encode(item)
-// 			return
-// 		}
-// 	}
-// }
+	if store.ID == 0 {
+		resp["status"] = "falied"
+		resp["message"] = "Store not found"
+		responses.JSON(w, http.StatusInternalServerError, resp)
+		return
+	}
+
+	if err := models.DeleteStore(intID, a.DB); err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp["message"] = "Deleted Store " + params["id"]
+	responses.JSON(w, http.StatusOK, resp)
+	return
+}
+
+func (a *App) showStore(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, _ := strconv.Atoi(params["id"])
+
+	store, err := models.GetStoreByID(id, a.DB)
+
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, store)
+	return
+}
