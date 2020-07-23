@@ -29,7 +29,10 @@ func (a *App) Initialize(DbHost, DbPort, DbUser, DbName, DbPassword string) {
 		fmt.Printf("We are connected to the database %s", DbName)
 	}
 
-	a.DB.Debug().AutoMigrate(&models.Store{}) //database migration
+	a.DB.Debug().AutoMigrate(
+		&models.Store{},
+		&models.User{},
+	) //database migration
 
 	a.Router = mux.NewRouter().StrictSlash(true)
 	a.initializeRoutes()
