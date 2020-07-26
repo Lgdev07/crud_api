@@ -1,0 +1,11 @@
+FROM golang:alpine
+
+WORKDIR /crud_api_test
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+CMD CGO_ENABLED=0 go test -v  ./...
