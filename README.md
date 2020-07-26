@@ -31,6 +31,7 @@
 ## 🚀 Installation and execution
 
 1. Clone this repository and go to the directory;
+2. Rename .env.sample to .env;
 
 <h4> 🔧 Development </h4>
 
@@ -44,16 +45,21 @@
 ## 🛣️ Available Routes
 
 <h4> POST </h4>
+
 - '/stores'
 
 <h4> PUT </h4>
+
 - '/stores/{id:[0-9]+}'
 
 <h4> DELETE </h4>
+
 - '/stores/{id:[0-9]+}'
 
 <h4> GET </h4>
+
 - '/stores'
+
 - '/stores/{id:[0-9]+}'
 
 ## 🤔 How to contribute
