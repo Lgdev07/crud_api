@@ -32,7 +32,7 @@ func (s *Store) Save(db *gorm.DB) (*Store, error) {
 }
 
 // GetStores Get all stores in the database
-func GetStores(db *gorm.DB) (*[]Store, error) {
+func (s *Store) GetStores(db *gorm.DB) (*[]Store, error) {
 	stores := []Store{}
 
 	if err := db.Debug().Table("stores").Find(&stores).Error; err != nil {

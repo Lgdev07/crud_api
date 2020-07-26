@@ -44,7 +44,9 @@ func (a *App) createStore(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) listStore(w http.ResponseWriter, r *http.Request) {
-	stores, err := models.GetStores(a.DB)
+	store := &models.Store{}
+
+	stores, err := store.GetStores(a.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
