@@ -1,17 +1,15 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/Lgdev07/crud_api/controllers"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// if err := godotenv.Load(); err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	app := controllers.App{}
 	app.Initialize(
