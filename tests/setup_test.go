@@ -25,7 +25,7 @@ func Database() {
 
 	var err error
 
-	DBURL := fmt.Sprintf(`host=crud_api_db_test port=5432 user=postgres 
+	DBURL := fmt.Sprintf(`host=localhost port=5432 user=postgres 
 	dbname=crud_api_test sslmode=disable password=docker`)
 
 	app.DB, err = gorm.Open("postgres", DBURL)
