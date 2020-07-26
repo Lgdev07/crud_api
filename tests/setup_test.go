@@ -32,17 +32,15 @@ func Database() {
 
 	var err error
 
-	DBURL := fmt.Sprintf(`host=%s port=%s user=%s dbname=%s 
-		sslmode=disable password=%s`, os.Getenv("TEST_DB_HOST"),
-		os.Getenv("DB_PORT"), os.Getenv("DB_USER"),
-		os.Getenv("TEST_DB_NAME"), os.Getenv("DB_PASSWORD"))
+	DBURL := fmt.Sprintf(`host=crud_api_db_test port=5432 user=postgres 
+	dbname=crud_api_test sslmode=disable password=docker`)
 
 	app.DB, err = gorm.Open("postgres", DBURL)
 	if err != nil {
-		fmt.Printf("Cannot connect to %s database\n", "postgres")
+		fmt.Printf("Cannot connect to postgres database\n")
 		log.Fatal("This is the error:", err)
 	} else {
-		fmt.Printf("We are connected to the %s database\n", "postgres")
+		fmt.Printf("We are connected to the postgres database\n")
 	}
 
 }
