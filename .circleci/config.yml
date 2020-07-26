@@ -2,8 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:alpine
-      - image: circleci/postgres
+      - image: circleci/golang:latest
+      - image: circleci/postgres:alpine
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: crud_api_test
