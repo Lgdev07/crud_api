@@ -5,7 +5,7 @@ jobs:
       - image: circleci/golang:latest
       - image: circleci/postgres:alpine
         environment:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: Lgdev07
           POSTGRES_DB: crud_api_test
 
     environment:
