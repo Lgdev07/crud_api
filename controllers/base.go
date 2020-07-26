@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/Lgdev07/crud_api/middlewares"
 	"github.com/Lgdev07/crud_api/models"
@@ -49,6 +50,13 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) RunServer() {
-	log.Printf("\nServer starting on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", a.Router))
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("\nServer starting on port %v", port)
+	log.Fatal(http.ListenAndServe(":"+port, a.Router))
 }
