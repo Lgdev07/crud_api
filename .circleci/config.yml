@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:alpine
+      - image: circleci/postgres
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: crud_api_test
+
+    environment:
+      GO111MODULE: "on"
+
+    working_directory: ~/crud_api_test
+
+    steps:
+      - checkout
+      - run:
+          name: "Fetch dependencies"
+          command: go mod download
+
+      - run:
+          name: Waiting for Postgres to be ready
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Run unit tests
+          environment:
+            FORUM_DB_URL: "postgres://Lgdev07@localhost:5432/crud_api_test?sslmode=disable"
+          command: go test -v ./tests/...
+
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build
