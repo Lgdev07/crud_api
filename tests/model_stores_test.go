@@ -25,9 +25,6 @@ func TestAllStores(t *testing.T) {
 	}
 
 	assert.Equal(t, len(*stores), 2)
-	assert.Equal(t, (*stores)[0].Name, "Store 2")
-	assert.Equal(t, (*stores)[0].Type, "Type 2")
-	assert.Equal(t, (*stores)[0].Active, true)
 
 }
 
